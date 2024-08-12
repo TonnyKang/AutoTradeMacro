@@ -1,12 +1,17 @@
 import pyautogui
 import time
 
+def getAccounts():
+    pyautogui.hotkey('ctrl', 'c')
+    return 0
+
 def csvExport(x, y):
+    time.sleep(2)
     # Coordinates for the right click
     right_click_point = (x*0.136, y*0.192) # right click anywhere on the program
 
     # Coordinates for the left click
-    left_click_point = (x*0.1635, y*0.3148) # export
+    left_click_point = (x*0.1635, y*0.340) # export
 
     # Optional: Small delay to give you time before the script runs
     time.sleep(2)
@@ -27,7 +32,7 @@ def csvExport(x, y):
     pyautogui.moveTo(left_click_point)
     pyautogui.click(button='left')
 
-    left_click_point = (x*0.125, y*0.9120) #remote chrome keyboard input
+    left_click_point = (x*0.125, y*0.9200) #remote chrome keyboard input
 
     pyautogui.moveTo(left_click_point)
     pyautogui.click(button='left')
@@ -47,15 +52,21 @@ def csvExport(x, y):
     time.sleep(0.5)
     pyautogui.click(button='left')
 
+    #to copy the whole row of
+    time.sleep(4)
+    pyautogui.moveTo((x*0.1896, y*0.28))
+    pyautogui.click(button='left')
+
+    
+    time.sleep(0.5)
+    #pyautogui.moveTo((x*0.20, y*0.3101))
+    #pyautogui.click(button='left')
+
+    getAccounts()
+
 
 x, y = pyautogui.size()
 
 csvExport(x, y)
 
-time.sleep(4)
-pyautogui.moveTo((x*0.1896, y*0.2888))
-pyautogui.click(button='right')
 
-time.sleep(0.5)
-pyautogui.moveTo((x*0.20, y*0.3101))
-pyautogui.click(button='left')
