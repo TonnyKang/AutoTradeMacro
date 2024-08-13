@@ -1,9 +1,15 @@
 import pyautogui
 import time
+import csv
 
 def getAccounts():
-    pyautogui.hotkey('ctrl', 'c')
-    return 0
+    # Open the CSV file
+    with open('current.csv', mode='r', newline='') as file:
+        reader = csv.reader(file)
+    
+    # Iterate over each row in the CSV file
+    for row in reader:
+        print(row)
 
 def csvExport(x, y):
     time.sleep(2)
@@ -67,6 +73,6 @@ def csvExport(x, y):
 
 x, y = pyautogui.size()
 
-csvExport(x, y)
-
+#csvExport(x, y)
+getAccounts()
 
