@@ -7,6 +7,7 @@ import re
 #Input the Absolute Path you have the CSV file
 # os.chdir(r'C:\Users\kangd\OneDrive\바탕 화면\Tonny\Projects\AutoTradeMacro')
 
+# Gets all accounts available
 def getAccounts(): 
     # List to store the second column's values
     accounts = []
@@ -29,6 +30,7 @@ def getAccounts():
     # Print the accounts list
     return accounts
 
+# Filters out PAs from all accounts
 def getPA():
     accounts=getAccounts()
 
@@ -41,6 +43,7 @@ def getPA():
 
     return filtered_accounts, total
 
+# Returns the PAs that we want
 def transactionPA():
     accounts, total = getPA()
 
@@ -67,14 +70,9 @@ def transactionPA():
         if extract_number(account) in today_accounts:
             accounts_to_use.append((account, idx+1))
 
-    # Print the sorted list
-    print("Sorted accounts list:", sorted_accounts)
-    print("Today accounts :", accounts_to_use)
-    print("Total accounts : ", total)
-    print("Accounts:", filtered_len)
-
     return accounts_to_use
 
+# Exports the current cells into a CSV file
 def csvExport(x, y):
     time.sleep(2)
     # Coordinates for the right click
@@ -123,7 +121,6 @@ def csvExport(x, y):
     pyautogui.click(button='left')
 
     # We need to save in the same path as this script
-    getAccounts()
 
 def selectAccount(x, y):
     # 각 dom Account 좌표
@@ -131,10 +128,129 @@ def selectAccount(x, y):
         time.sleep(1)
         pyautogui.click(x, y)
 
+def setInstrument():
+    # > 첫번째 슈퍼돔은 NQ 09-24
+    # > 두번째 슈퍼돔은 YM 09-24
+    # > 세번째 슈퍼돔은 GC 08-24
 
-x, y = pyautogui.size()
+    return True
 
-# csvExport(x, y)
-transactionPA()
+# input which dome to set, if 0, set all of them
+def setQuantity(i):
+    # >첫번째 슈퍼돔은 1, 2 고정
+    # > 두번째 슈퍼돔은 2, 4 고정
+    # > 세번째 슈퍼돔은 1, 2 고정
 
-#selectAccount(x, y)
+    return True
+
+
+# Sets the accounts we want to use to the domes, the accounts list should have only 3
+def setAccounts(accounts): 
+
+
+    return True
+
+def setATMStrat():
+    # > 첫번째 슈퍼돔은 1로 고정
+    # > 두번째 슈퍼돔은 2로 고정
+    # > 세번째 슈퍼돔은 3로 고정
+    # > Account가 변경될때 이게 none 으로 변경될수도 있어서
+    # Account가 변경되거나 거래가 마무리되면 확인해야함
+
+    return True
+
+# Returns 3 GrossReals, Ideally for the accounts we are trading with
+def getGrossReal(i,j,k):
+        # List to store 
+    gross_real = []
+
+    # Open the CSV file manually
+    file = open('current.csv', mode='r', newline='')
+
+    try:
+        reader = csv.reader(file) 
+        # Iterate over each row in the CSV file
+        for row in reader:
+            # Append the 10th column to the gross_real list if it exists
+            if len(row) > 1:
+                gross_real.append(row[10])
+    
+        
+    finally:
+        # Ensure the file is closed manually
+        file.close()
+   
+    return gross_real[i], gross_real[j],gross_real[k]
+
+# Doubles Quantity if GrossReal is Negative
+# for the ith dome
+def doubleQuantity(i):
+
+    return True
+
+# The transaction that will go on
+def transaction():
+    # Get the Accounts we are going to use
+    accounts=transactionPA()
+    # Initial Instruments
+    setInstrument()
+    setQuantity()
+    setATMStrat()   
+
+    domeStatus=[] # Holds the current accounts in domes
+
+    # 3 Domes
+    domeStatus.append(accounts.pop(0))
+    domeStatus.append(accounts.pop(0))
+    domeStatus.append(accounts.pop(0))
+
+    # The First 3 Accounts
+    setAccounts(domeStatus)
+    
+    while(1):
+        #
+        #
+        #
+        #ACTUAL TRANSACTION CODE NEEDED HERE
+        #
+        #
+        #
+        current_gross_real=getGrossReal(domeStatus[0][1],domeStatus[1][1],domeStatus[2][1])
+
+        for i in range(3):
+            # If GrossReal is Green
+            if current_gross_real[i]>0:
+                if accounts: 
+                    domeStatus[i]=accounts.pop(0)
+                # No more accounts
+                else:
+                    domeStatus[i]=(0,0)
+            # If GrossReal is Red
+            else:
+                doubleQuantity(domeStatus[i][0])
+        
+        if  domeStatus[0][0]==0 and domeStatus[1][0]==0 and domeStatus[2][0]==0:
+            # We've done al the accounts
+            break
+        else:
+            # Set the new accounts and go again
+            setAccounts(domeStatus)
+
+                
+                
+
+
+          
+
+
+# Main Function
+def main():
+    x, y = pyautogui.size()
+
+    # csvExport(x, y)
+    #accounts=transactionPA()
+
+    #selectAccount(x, y)
+
+if __name__ == "__main__":
+    main()
