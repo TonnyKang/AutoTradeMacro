@@ -3,6 +3,7 @@ import time
 import csv
 import os
 import re
+from collections import deque
 
 #Input the Absolute Path you have the CSV file
 # os.chdir(r'C:\Users\kangd\OneDrive\바탕 화면\Tonny\Projects\AutoTradeMacro')
@@ -38,7 +39,8 @@ def getPA():
     total = len(accounts) - 1
 
     # Filter accounts to keep only those starting with "PA"
-    filtered_accounts = [account for account in accounts if account.startswith("PA")]
+    # filtered_accounts = [account for account in accounts if account.startswith("PA")]
+    filtered_accounts = [account for account in accounts if account.startswith("APEX")]
     print("PA Accounts:",filtered_accounts)
 
     return filtered_accounts, total
@@ -64,16 +66,17 @@ def transactionPA():
     sorted_accounts = sorted(accounts, key=extract_number)
 
     # Find the index of today's accounts in the sorted list and create a new list with the result
-    accounts_to_use = []
+    accounts_to_use = deque()
 
     for idx, account in enumerate(sorted_accounts):
         if extract_number(account) in today_accounts:
-            accounts_to_use.append((account, idx+1))
+            accounts_to_use.append((account, idx))
 
     return accounts_to_use
 
 # Exports the current cells into a CSV file
-def csvExport(x, y):
+def csvExport():
+    global x,y
     time.sleep(2)
     # Coordinates for the right click
     right_click_point = (x*0.1786, y*0.1935) # right click anywhere on the program
@@ -95,15 +98,16 @@ def csvExport(x, y):
     pyautogui.moveTo(left_click_point)
     pyautogui.click(button='left')
 
-    left_click_point = (x*0.9536, y*0.9166) #remote chrome backspace to erase default name
+    #left_click_point = (x*0.9536, y*0.9166) #remote chrome backspace to erase default name
+    # Press the Backspace key
+    pyautogui.press('backspace')
+    #pyautogui.moveTo(left_click_point)
+    #pyautogui.click(button='left')
 
-    pyautogui.moveTo(left_click_point)
-    pyautogui.click(button='left')
-
-    left_click_point = (x*0.125, y*0.9166) #remote chrome keyboard input
-
-    pyautogui.moveTo(left_click_point)
-    pyautogui.click(button='left')
+    #left_click_point = (x*0.125, y*0.9166) #remote chrome keyboard input
+    
+    #pyautogui.moveTo(left_click_point)
+    #pyautogui.click(button='left')
 
     time.sleep(0.1)
     # Type the new file name, "current"
@@ -122,16 +126,46 @@ def csvExport(x, y):
 
     # We need to save in the same path as this script
 
-def selectAccount(x, y):
+# Sets the accounts we want to use to the domes, the accounts list should have only 3
+def selectAccount(accounts):
+    dy = y*0.0170
     # 각 dom Account 좌표
     for x, y in [(x*0.6989, y*0.3379), (x*0.6989, y*0.5861), (x*0.6989, y*0.8129)]:
+        if accounts:
+            _, d = accounts.popleft()
+        else:
+            break
+        
+        #pyautogui.click(x, y)
+        #time.sleep(0.5)
+        pyautogui.keyDown('up') # up 키를 누른 상태를 유지합니다.
         time.sleep(1)
-        pyautogui.click(x, y)
+        pyautogui.keyUp('up') # up 키를 뗍니다.
+
+        pyautogui.press('down', presses=d, interval=0.1) #  down 키를 0.1초에 한번씩 d번 입력합니다. 
+        pyautogui.press('enter')
+
+        #y += dy*(d+1)
+        #pyautogui.click(x, y)
 
 def setInstrument():
     # > 첫번째 슈퍼돔은 NQ 09-24
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+    pyautogui.write("NQ 09-24")
+
     # > 두번째 슈퍼돔은 YM 09-24
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+    pyautogui.write("YM 09-24")
+
     # > 세번째 슈퍼돔은 GC 08-24
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+    pyautogui.write("GC 08-24")
 
     return True
 
@@ -140,20 +174,55 @@ def setQuantity(i):
     # >첫번째 슈퍼돔은 1, 2 고정
     # > 두번째 슈퍼돔은 2, 4 고정
     # > 세번째 슈퍼돔은 1, 2 고정
+    if not i:
+        left_click_point = (x*, y*)
+        pyautogui.moveTo(left_click_point)
+        pyautogui.click(button='left')
+        pyautogui.press('backspace')
+        pyautogui.write('1')
+
+        left_click_point = (x*, y*)
+        pyautogui.moveTo(left_click_point)
+        pyautogui.click(button='left')
+        pyautogui.press('backspace')
+        pyautogui.write('2')
+
+        left_click_point = (x*, y*)
+        pyautogui.moveTo(left_click_point)
+        pyautogui.click(button='left')
+        pyautogui.press('backspace')
+        pyautogui.write('1')
+    else:
+        # initialize the ith dome
 
     return True
 
-
-# Sets the accounts we want to use to the domes, the accounts list should have only 3
-def setAccounts(accounts): 
-
-
-    return True
 
 def setATMStrat():
     # > 첫번째 슈퍼돔은 1로 고정
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+
     # > 두번째 슈퍼돔은 2로 고정
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+
     # > 세번째 슈퍼돔은 3로 고정
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+    left_click_point = (x*, y*)
+    pyautogui.moveTo(left_click_point)
+    pyautogui.click(button='left')
+
     # > Account가 변경될때 이게 none 으로 변경될수도 있어서
     # Account가 변경되거나 거래가 마무리되면 확인해야함
 
@@ -185,7 +254,7 @@ def getGrossReal(i,j,k):
 # Doubles Quantity if GrossReal is Negative
 # for the ith dome
 def doubleQuantity(i):
-
+    
     return True
 
 # The transaction that will go on
@@ -205,7 +274,7 @@ def transaction():
     domeStatus.append(accounts.pop(0))
 
     # The First 3 Accounts
-    setAccounts(domeStatus)
+    selectAccounts(domeStatus)
     
     while(1):
         #
@@ -234,7 +303,7 @@ def transaction():
             break
         else:
             # Set the new accounts and go again
-            setAccounts(domeStatus)
+            selecttAccounts(domeStatus)
 
                 
                 
@@ -247,10 +316,12 @@ def transaction():
 def main():
     x, y = pyautogui.size()
 
-    # csvExport(x, y)
-    #accounts=transactionPA()
+    # csvExport()
+    accounts=transactionPA()
 
-    #selectAccount(x, y)
+    print(accounts)
+
+    selectAccount(x, y, accounts)
 
 if __name__ == "__main__":
     main()
